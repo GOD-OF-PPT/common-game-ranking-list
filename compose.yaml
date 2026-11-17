@@ -5,7 +5,7 @@ services:
       POSTGRES_USER: ranking
       POSTGRES_PASSWORD: ranking
       POSTGRES_DB: ranking
-    ports: ["127.0.0.1:5432:5432"]
-    volumes: ["ranking-data:/var/lib/postgresql/data"]
+    ports: ['127.0.0.1:5432:5432']
+    volumes: ['ranking-data:/var/lib/postgresql/data']
 volumes:
   ranking-data:

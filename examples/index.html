@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>小游戏跨域接入示例</title>
+    <link rel="stylesheet" href="/example.css" />
+  </head>
+  <body>
+    <main>
+      <a href="https://github.com/GOD-OF-PPT/common-game-ranking-list">Rank · 网页小游戏接入示例</a>
+      <h1>把这一局，记进排行榜。</h1>
+      <p>这个页面运行在你自己的站点，成绩存储在独立的排行榜服务中。</p>
+      <form id="form">
+        <label
+          >排行榜服务地址<input
+            id="base"
+            type="url"
+            value="https://ranking-api-production-a8ed42bc.up.railway.app"
+            required
+        /></label>
+        <div class="row">
+          <label>游戏标识<input id="game" value="demo" required /></label
+          ><label>榜单标识<input id="board" value="high-score" required /></label>
+        </div>
+        <div class="row">
+          <label>玩家名称<input id="name" value="跨域演示玩家（测试数据）" required /></label
+          ><label>本局分数<input id="score" type="number" value="1800" required /></label
+          ><label>耗时（秒）<input id="duration" type="number" value="65" required /></label>
+        </div>
+        <button type="submit">上报本局成绩</button
+        ><button id="me" type="button">查询我的名次</button
+        ><button id="top" type="button">查看排行榜</button>
+      </form>
+      <pre id="result" role="status" aria-live="polite">等待操作…</pre>
+      <p class="note">
+        匿名身份由服务签发，保存在当前网站的浏览器存储中。浏览器提交适合娱乐榜；竞技场景请通过游戏后端验证。
+      </p>
+    </main>
+    <script type="module" src="/example.js"></script>
+  </body>
+</html>

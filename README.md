@@ -2,6 +2,10 @@
 
 面向网页小游戏的通用排行榜服务。支持游戏名、用户名、用户游戏信息和自定义排序依据，直接通过跨域 HTTP API 或浏览器 SDK 接入。
 
+当前部署：[工作台](https://ranking-api-production-a8ed42bc.up.railway.app/) · [API 文档](https://ranking-api-production-a8ed42bc.up.railway.app/docs) · [接入试验场](https://ranking-api-production-a8ed42bc.up.railway.app/playground.html)。
+
+已创建 `demo` 示例游戏，包含 `high-score` 总分榜和 `speed-run` 速通榜。示例成绩明确标记为测试数据。
+
 ## 能力与数据模型
 
 ```text
@@ -56,14 +60,14 @@ SDK 是无依赖 ESM，随服务发布。它的跨域模块加载也允许 CORS�
 
   const ranking = new RankingClient({
     baseUrl: 'https://YOUR-SERVICE.up.railway.app',
-    game: 'pixel-runner'
+    game: 'pixel-runner',
   });
 
   // 在游戏结束后调用；首次提交会自动领取匿名玩家令牌。
   const result = await ranking.submit('high-score', {
     username: '小明',
     metrics: { score: 1200, duration: 65.3 },
-    info: { level: 8, character: '法师', equipment: ['木杖'] }
+    info: { level: 8, character: '法师', equipment: ['木杖'] },
   });
   // accepted=false 表示成绩有效，但已保留更好或相同的历史成绩。
   console.log(result.accepted);
@@ -77,6 +81,13 @@ SDK 是无依赖 ESM，随服务发布。它的跨域模块加载也允许 CORS�
 SDK 默认在**游戏网站自身的 localStorage** 保存令牌，30 天有效。相同浏览器、网站来源和游戏会复用身份。清除存储、换设备、换网站来源或令牌到期后会产生新身份；首版不提供账号恢复和跨设备合并。localStorage 不可用时退化为当前客户端实例的内存存储。需要自己的存储时，传入实现 `getItem` / `setItem` 的 `storage`；传 `null` 仅在内存保留。
 
 公开榜单无需令牌即可读取。若榜单设置 `public:false`，需 `ranking.top('board', { authenticated:true })`；该设置只要求同游戏有效身份，**不代表仅管理员或指定玩家可见**。游客开放的游戏任何访问者都能申请身份。
+
+仓库还提供 [独立站点接入示例](examples/index.html)，可在其他来源运行，验证真实浏览器跨域：
+
+```bash
+python -m http.server 3817 --bind 127.0.0.1 --directory examples
+# 打开 http://127.0.0.1:3817，默认连接已部署的 demo 游戏。
+```
 
 ### 3. 不使用 SDK 时的请求链路
 
@@ -103,19 +114,19 @@ GET /api/v1/games/pixel-runner/boards/high-score/players/<playerId>
 
 ## 接口一览
 
-| 方法 | 路径（前缀 `/api/v1`） | 权限 |
-|---|---|---|
-| GET | `/admin/session` | 管理员，校验管理身份 |
-| GET | `/games` | 公开，返回游戏目录 |
-| POST | `/admin/games` | 管理员，创建游戏，后端密钥仅返回一次 |
-| PATCH | `/admin/games/:game` | 管理员，修改名称和游客开关 |
-| POST | `/admin/games/:game/rotate-key` | 管理员，轮换后端密钥 |
-| POST | `/games/:game/sessions` | 开启游客的游戏，领取身份 |
-| GET | `/games/:game/boards` | 公开；私有榜单需同游戏身份 |
-| POST | `/games/:game/boards` | 管理员或该游戏后端密钥 |
-| GET | `/games/:game/boards/:board` | 公开榜单公开；其他需同游戏身份 |
-| GET | `/games/:game/boards/:board/players/:player` | 同榜单读取权限 |
-| POST | `/games/:game/boards/:board/scores` | 同游戏玩家令牌、后端密钥或管理员 |
+| 方法   | 路径（前缀 `/api/v1`）                             | 权限                                 |
+| ------ | -------------------------------------------------- | ------------------------------------ |
+| GET    | `/admin/session`                                   | 管理员，校验管理身份                 |
+| GET    | `/games`                                           | 公开，返回游戏目录                   |
+| POST   | `/admin/games`                                     | 管理员，创建游戏，后端密钥仅返回一次 |
+| PATCH  | `/admin/games/:game`                               | 管理员，修改名称和游客开关           |
+| POST   | `/admin/games/:game/rotate-key`                    | 管理员，轮换后端密钥                 |
+| POST   | `/games/:game/sessions`                            | 开启游客的游戏，领取身份             |
+| GET    | `/games/:game/boards`                              | 公开；私有榜单需同游戏身份           |
+| POST   | `/games/:game/boards`                              | 管理员或该游戏后端密钥               |
+| GET    | `/games/:game/boards/:board`                       | 公开榜单公开；其他需同游戏身份       |
+| GET    | `/games/:game/boards/:board/players/:player`       | 同榜单读取权限                       |
+| POST   | `/games/:game/boards/:board/scores`                | 同游戏玩家令牌、后端密钥或管理员     |
 | DELETE | `/admin/games/:game/boards/:board/players/:player` | 管理员或该游戏后端密钥，移除违规成绩 |
 
 管理员通过 `Authorization: Bearer <ADMIN_API_KEY>` 鉴权。游戏后端通过 `X-API-Key: <apiKey>` 鉴权，上报时需要指定自己的稳定 `playerId`，允许字母、数字、下划线和连字符，最长 128 字符。`guest_` 前缀为匿名身份保留。密钥在数据库中仅存 SHA-256 哈希。
@@ -144,13 +155,13 @@ npm run dev
 
 打开 [本地工作台](http://localhost:3000)、[本地 API 文档](http://localhost:3000/docs)。`npm run dev` 和 `npm start` 自动读取本地 `.env`。数据库表在启动时自动迁移。
 
-| 变量 | 说明 |
-|---|---|
-| `DATABASE_URL` | 必填，PostgreSQL 连接字符串 |
-| `ADMIN_API_KEY` | 必填，至少 32 字符随机管理员密钥 |
+| 变量                  | 说明                                                                             |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `DATABASE_URL`        | 必填，PostgreSQL 连接字符串                                                      |
+| `ADMIN_API_KEY`       | 必填，至少 32 字符随机管理员密钥                                                 |
 | `PLAYER_TOKEN_SECRET` | 必填，至少 32 字符、与管理员密钥不同的随机令牌签名密钥；轮换会使所有游客令牌失效 |
-| `PORT` | 默认 3000；Railway 自动注入 |
-| `CORS_ORIGINS` | 默认 `*`，或精确来源的逗号分隔列表 |
+| `PORT`                | 默认 3000；Railway 自动注入                                                      |
+| `CORS_ORIGINS`        | 默认 `*`，或精确来源的逗号分隔列表                                               |
 
 ```bash
 npm run check
@@ -160,6 +171,14 @@ npm start
 ```
 
 测试使用 PGlite 的真实 PostgreSQL 执行引擎运行迁移及业务 SQL，不依赖 Docker，也不以假仓储替代排名查询。覆盖混合排序、并列名次、个人最好/最新、并发覆盖、游戏和玩家隔离、令牌过期、私有榜单、跨域预检、校验、密钥轮换和浏览器 SDK 身份复用。CI 自动运行类型检查、测试和构建。
+
+线上验收脚本读取环境变量或本地 `.env` 中的管理员密钥，不输出凭据；会补齐 `demo` 游戏和两个榜单，写入并清理自己的临时测试成绩：
+
+```bash
+BASE_URL=https://YOUR-SERVICE.up.railway.app node scripts/verify-live.mjs
+```
+
+实际部署与验收结果见 [验证记录](docs/verification.md)。
 
 ## Railway 部署
 

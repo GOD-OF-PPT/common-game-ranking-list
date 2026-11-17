@@ -1,5 +1,61 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>接入试验场 / Rank</title><link rel="stylesheet" href="/styles.css"></head>
-<body><div class="playground"><a class="brand" href="/"><span class="brand-icon">▥</span> Rank.</a><h1>接入试验场</h1><p class="muted">使用与网页小游戏相同的浏览器 SDK，领取身份、提交成绩并查询榜单。</p>
-<section class="panel"><h2>01 / 选择游戏与榜单</h2><div class="inline-form"><label>游戏标识<input id="game" value="demo"></label><label>榜单标识<input id="board" value="high-score"></label></div><p class="muted small">默认使用公开的 demo 示例游戏。其他游戏请先在工作台创建对应榜单。用户游戏信息会在榜单公开展示。</p></section>
-<section class="panel"><h2>02 / 上报一份成绩</h2><form id="submit-form"><div class="inline-form"><label>玩家名称<input id="username" value="网页玩家" maxlength="80" required></label><label>游戏成绩（JSON）<textarea id="metrics" rows="3" required>{"score":1200,"duration":60}</textarea></label></div><div class="inline-form"><label>用户游戏信息（JSON）<textarea id="info" rows="2">{"level":5,"character":"法师"}</textarea></label></div><div class="inline-form"><button class="button primary">提交成绩</button><button type="button" class="button" id="my-rank">查询我的名次</button><button type="button" class="button" id="top-rank">查看前 20 名</button></div></form><pre id="result" class="result" role="status" aria-live="polite">等待操作…</pre></section>
-<section class="panel"><h2>03 / 放进你的网页小游戏</h2><pre id="snippet"></pre><p class="muted small">SDK 默认在游戏网站的 localStorage 中保留玩家令牌；同一浏览器、同一来源下复用身份。清除存储、更换网站来源或令牌到期会生成新身份。无需在网页内放置管理员密钥。</p><p><a class="link" href="/docs">查看完整 API 文档 ↗</a></p></section></div><script type="module" src="/playground.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>接入试验场 / Rank</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="playground">
+      <a class="brand" href="/"><span class="brand-icon">▥</span> Rank.</a>
+      <h1>接入试验场</h1>
+      <p class="muted">使用与网页小游戏相同的浏览器 SDK，领取身份、提交成绩并查询榜单。</p>
+      <section class="panel">
+        <h2>01 / 选择游戏与榜单</h2>
+        <div class="inline-form">
+          <label>游戏标识<input id="game" value="demo" /></label
+          ><label>榜单标识<input id="board" value="high-score" /></label>
+        </div>
+        <p class="muted small">
+          默认使用公开的 demo
+          示例游戏。其他游戏请先在工作台创建对应榜单。用户游戏信息会在榜单公开展示。
+        </p>
+      </section>
+      <section class="panel">
+        <h2>02 / 上报一份成绩</h2>
+        <form id="submit-form">
+          <div class="inline-form">
+            <label>玩家名称<input id="username" value="网页玩家" maxlength="80" required /></label
+            ><label
+              >游戏成绩（JSON）<textarea id="metrics" rows="3" required>
+{"score":1200,"duration":60}</textarea>
+            </label>
+          </div>
+          <div class="inline-form">
+            <label
+              >用户游戏信息（JSON）<textarea id="info" rows="2">
+{"level":5,"character":"法师"}</textarea>
+            </label>
+          </div>
+          <div class="inline-form">
+            <button class="button primary">提交成绩</button
+            ><button type="button" class="button" id="my-rank">查询我的名次</button
+            ><button type="button" class="button" id="top-rank">查看前 20 名</button>
+          </div>
+        </form>
+        <pre id="result" class="result" role="status" aria-live="polite">等待操作…</pre>
+      </section>
+      <section class="panel">
+        <h2>03 / 放进你的网页小游戏</h2>
+        <pre id="snippet"></pre>
+        <p class="muted small">
+          SDK 默认在游戏网站的 localStorage
+          中保留玩家令牌；同一浏览器、同一来源下复用身份。清除存储、更换网站来源或令牌到期会生成新身份。无需在网页内放置管理员密钥。
+        </p>
+        <p><a class="link" href="/docs">查看完整 API 文档 ↗</a></p>
+      </section>
+    </div>
+    <script type="module" src="/playground.js"></script>
+  </body>
+</html>
