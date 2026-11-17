@@ -4,6 +4,8 @@
 
 当前部署：[工作台](https://ranking-api-production-a8ed42bc.up.railway.app/) · [API 文档](https://ranking-api-production-a8ed42bc.up.railway.app/docs) · [接入试验场](https://ranking-api-production-a8ed42bc.up.railway.app/playground.html)。
 
+其他网页小游戏项目请先阅读 [网页小游戏接入指南](docs/web-game-integration.md)：包含完整代码示例、工程集成、字段约定、身份复用、错误处理和可直接转发的接入任务。
+
 已创建 `demo` 示例游戏，包含 `high-score` 总分榜和 `speed-run` 速通榜。示例成绩明确标记为测试数据。
 
 ## 能力与数据模型
