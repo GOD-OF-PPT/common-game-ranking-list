@@ -115,14 +115,12 @@ export async function buildApp(db: Database, config: Config) {
 
   app.setErrorHandler((error, request, reply) => {
     if (hasZodFastifySchemaValidationErrors(error)) {
-      return reply
-        .code(400)
-        .send({
-          code: 'VALIDATION_ERROR',
-          message: '请求字段不合法',
-          details: error.validation,
-          requestId: request.id,
-        });
+      return reply.code(400).send({
+        code: 'VALIDATION_ERROR',
+        message: '请求字段不合法',
+        details: error.validation,
+        requestId: request.id,
+      });
     }
     const err =
       error instanceof Error
@@ -135,13 +133,11 @@ export async function buildApp(db: Database, config: Config) {
     }
     const status = 'statusCode' in err && typeof err.statusCode === 'number' ? err.statusCode : 500;
     if (status >= 500) request.log.error(error);
-    return reply
-      .code(status)
-      .send({
-        code: 'code' in err ? err.code : 'INTERNAL_ERROR',
-        message: status >= 500 ? '服务暂时不可用，请稍后重试' : err.message,
-        requestId: request.id,
-      });
+    return reply.code(status).send({
+      code: 'code' in err ? err.code : 'INTERNAL_ERROR',
+      message: status >= 500 ? '服务暂时不可用，请稍后重试' : err.message,
+      requestId: request.id,
+    });
   });
   app.setNotFoundHandler((req, reply) =>
     reply.code(404).send({ code: 'NOT_FOUND', message: '接口不存在', requestId: req.id }),
